@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EmoFusion — AI-Powered Emotion Detection</title>
+  <meta name="description" content="EmoFusion uses AI to detect your emotions from speech, camera, and text — providing real-time mental well-being support." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <!-- ── Navbar ────────────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">EmoFusion</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#auth" class="btn-nav" id="navLoginBtn">Sign In</a></li>
+      </ul>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="container hero-content fade-in-up">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered · Real-Time · Multi-Modal
+      </div>
+      <h1 class="hero-title">Understand Your<br /><span class="gradient-text">Emotions with AI</span></h1>
+      <p class="hero-sub">EmoFusion combines Speech Analysis, Computer Vision, and Natural Language Processing to detect your emotional state and guide your mental well-being.</p>
+      <div class="emotion-pills">
+        <span class="pill pill-happy">😊 Happy</span>
+        <span class="pill pill-sad">😢 Sad</span>
+        <span class="pill pill-angry">😠 Angry</span>
+        <span class="pill pill-fear">😨 Fear</span>
+        <span class="pill pill-neutral">😐 Neutral</span>
+        <span class="pill pill-disgust">🤢 Disgust</span>
+        <span class="pill pill-surprise">😲 Surprise</span>
+      </div>
+      <div class="hero-actions">
+        <a href="#auth" class="btn btn-primary" id="heroGetStarted">
+          Get Started Free
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how-it-works" class="btn btn-ghost">How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="stat-num">7</span><span class="stat-label">Emotions</span></div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat"><span class="stat-num">3</span><span class="stat-label">Input Modes</span></div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="emotion-orbit">
+        <div class="orbit-ring orbit-ring-1"></div>
+        <div class="orbit-ring orbit-ring-2"></div>
+        <div class="orbit-ring orbit-ring-3"></div>
+        <div class="orbit-center">
+          <div class="orbit-emoji" id="orbitEmoji">🧠</div>
+        </div>
+        <div class="orbit-dot orbit-dot-1">😊</div>
+        <div class="orbit-dot orbit-dot-2">😢</div>
+        <div class="orbit-dot orbit-dot-3">😠</div>
+        <div class="orbit-dot orbit-dot-4">😨</div>
+        <div class="orbit-dot orbit-dot-5">😲</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ──────────────────────────────────────────────── -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-tag">Capabilities</div>
+        <h2 class="section-title">Everything You Need for<br /><span class="gradient-text">Emotional Intelligence</span></h2>
+        <p class="section-sub">A complete multi-modal platform for understanding and tracking your emotional health.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in-up" style="--delay:0.1s">
+          <div class="feature-icon icon-purple">🎙️</div>
+          <h3>Speech Analysis</h3>
+          <p>Upload audio or record live speech. Our CNN model analyzes Mel Spectrograms to detect emotional tones in your voice.</p>
+          <div class="feature-badge">Mic + File Upload</div>
+        </div>
+        <div class="feature-card fade-in-up" style="--delay:0.2s">
+          <div class="feature-icon icon-pink">📷</div>
+          <h3>Camera Detection</h3>
+          <p>Live webcam feed analysis using DeepFace. Auto-detects facial expressions every 4 seconds with high accuracy.</p>
+          <div class="feature-badge">Real-Time Video</div>
+        </div>
+        <div class="feature-card fade-in-up" style="--delay:0.3s">
+          <div class="feature-icon icon-cyan">💬</div>
+          <h3>Text Emotion</h3>
+          <p>Paste or type any text. VADER sentiment analysis + keyword mapping extracts emotional content instantly.</p>
+          <div class="feature-badge">NLP Powered</div>
+        </div>
+        <div class="feature-card fade-in-up" style="--delay:0.4s">
+          <div class="feature-icon icon-purple">📊</div>
+          <h3>History & Analytics</h3>
+          <p>Track your emotional journey over time with beautiful charts, trend lines, and activity breakdowns.</p>
+          <div class="feature-badge">7-Day Trends</div>
+        </div>
+        <div class="feature-card fade-in-up" style="--delay:0.5s">
+          <div class="feature-icon icon-pink">💡</div>
+          <h3>Well-Being Suggestions</h3>
+          <p>After every detection, receive personalized mental health guidance tailored to your detected emotion.</p>
+          <div class="feature-badge">AI Guidance</div>
+        </div>
+        <div class="feature-card fade-in-up" style="--delay:0.6s">
+          <div class="feature-icon icon-cyan">🔒</div>
+          <h3>Secure & Private</h3>
+          <p>JWT-secured sessions, hashed passwords, and local SQLite storage. Your data stays on your server.</p>
+          <div class="feature-badge">Privacy First</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ───────────────────────────────────────────── -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-tag">Process</div>
+        <h2 class="section-title">How EmoFusion <span class="gradient-text">Works</span></h2>
+      </div>
+      <div class="steps-track">
+        <div class="steps-line"></div>
+        <div class="step fade-in-up" style="--delay:0.1s">
+          <div class="step-num">01</div>
+          <div class="step-icon">🔐</div>
+          <h3>Create Account</h3>
+          <p>Sign up with your email and password. A secure JWT token keeps your session active for 7 days.</p>
+        </div>
+        <div class="step fade-in-up" style="--delay:0.2s">
+          <div class="step-num">02</div>
+          <div class="step-icon">🎯</div>
+          <h3>Choose Input Mode</h3>
+          <p>Select Speech, Camera, or Text — whatever feels natural for the moment.</p>
+        </div>
+        <div class="step fade-in-up" style="--delay:0.3s">
+          <div class="step-num">03</div>
+          <div class="step-icon">🤖</div>
+          <h3>AI Analyzes</h3>
+          <p>Our backend runs VADER, librosa, or DeepFace depending on your input and returns a confidence score.</p>
+        </div>
+        <div class="step fade-in-up" style="--delay:0.4s">
+          <div class="step-num">04</div>
+          <div class="step-icon">🌱</div>
+          <h3>Get Insights</h3>
+          <p>See your emotion, full breakdown across all 7 emotions, and a personalized well-being suggestion.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Auth Section ───────────────────────────────────────────── -->
+  <section class="auth-section" id="auth">
+    <div class="container">
+      <div class="auth-card fade-in-up">
+        <div class="auth-left">
+          <h2>Start Your Emotional<br /><span class="gradient-text">Intelligence Journey</span></h2>
+          <p>Join EmoFusion and gain deep insights into your emotional patterns with AI-powered analysis.</p>
+          <div class="auth-benefits">
+            <div class="auth-benefit"><span>✓</span> Free forever for personal use</div>
+            <div class="auth-benefit"><span>✓</span> All 3 detection modes</div>
+            <div class="auth-benefit"><span>✓</span> Full history & analytics</div>
+            <div class="auth-benefit"><span>✓</span> Personalized suggestions</div>
+          </div>
+        </div>
+        <div class="auth-right">
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" data-tab="login">Sign In</button>
+            <button class="auth-tab" id="tabSignup" data-tab="signup">Create Account</button>
+          </div>
+          <!-- Login Form -->
+          <form class="auth-form" id="loginForm">
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <input type="email" id="loginEmail" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <div class="input-wrap">
+                <input type="password" id="loginPassword" placeholder="Enter your password" required />
+                <button type="button" class="toggle-pw" data-target="loginPassword">👁</button>
+              </div>
+            </div>
+            <div class="form-error" id="loginError"></div>
+            <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+              <span>Sign In</span><div class="btn-spinner hidden"></div>
+            </button>
+            <p class="form-switch">Don't have an account? <a href="#" id="switchToSignup">Create one</a></p>
+          </form>
+          <!-- Signup Form -->
+          <form class="auth-form hidden" id="signupForm">
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <input type="text" id="signupName" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <input type="email" id="signupEmail" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <div class="input-wrap">
+                <input type="password" id="signupPassword" placeholder="At least 6 characters" required />
+                <button type="button" class="toggle-pw" data-target="signupPassword">👁</button>
+              </div>
+            </div>
+            <div class="form-error" id="signupError"></div>
+            <button type="submit" class="btn btn-primary btn-full" id="signupBtn">
+              <span>Create Account</span><div class="btn-spinner hidden"></div>
+            </button>
+            <p class="form-switch">Already have an account? <a href="#" id="switchToLogin">Sign in</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">EmoFusion</span>
+      </div>
+      <p class="footer-copy">Built with ❤️ for the AI &amp; Mental Wellness Community · College Project 2024</p>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="/dashboard.html">Dashboard</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

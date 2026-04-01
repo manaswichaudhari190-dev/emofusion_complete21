@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #21262d;
+  --text: #e6edf3;
+  --muted: #7d8590;
+  --brand: #5a8dee;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 { font-family: 'Syne', sans-serif; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Glassmorphism card */
+.glass {
+  background: rgba(22, 27, 34, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(33, 38, 45, 0.8);
+}
+
+/* Emotion color classes */
+.emotion-happy { color: #f9d71c; }
+.emotion-sad   { color: #7aa2f7; }
+.emotion-angry { color: #f7768e; }
+.emotion-fear  { color: #bb9af7; }
+.emotion-neutral { color: #9ece6a; }
+.emotion-disgust { color: #ff9e64; }
+.emotion-surprise { color: #2ac3de; }
+
+.bg-emotion-happy { background: rgba(249,215,28,0.15); border-color: rgba(249,215,28,0.4); }
+.bg-emotion-sad   { background: rgba(122,162,247,0.15); border-color: rgba(122,162,247,0.4); }
+.bg-emotion-angry { background: rgba(247,118,142,0.15); border-color: rgba(247,118,142,0.4); }
+.bg-emotion-fear  { background: rgba(187,154,247,0.15); border-color: rgba(187,154,247,0.4); }
+.bg-emotion-neutral { background: rgba(158,206,106,0.15); border-color: rgba(158,206,106,0.4); }
+.bg-emotion-disgust { background: rgba(255,158,100,0.15); border-color: rgba(255,158,100,0.4); }
+.bg-emotion-surprise { background: rgba(42,195,222,0.15); border-color: rgba(42,195,222,0.4); }

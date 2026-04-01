@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# ML models (large files — store separately or use Git LFS)
+backend/ml_models/*.h5
+backend/ml_models/*.pkl
+
+# Node / React
+node_modules/
+frontend/build/
+frontend/.env
+.DS_Store
+npm-debug.log*
+
+# Misc
+*.log
+.idea/
+.vscode/

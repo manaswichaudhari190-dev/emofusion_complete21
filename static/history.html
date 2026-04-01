@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History & Analytics — EmoFusion</title>
+  <meta name="description" content="View your emotion detection history, trends over 7 days, and distribution charts on EmoFusion." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="app-body">
+
+  <!-- Auth Gate -->
+  <div class="auth-gate" id="authGate">
+    <div class="auth-gate-box">
+      <div class="logo" style="justify-content:center;margin-bottom:1.5rem">
+        <span class="logo-icon">⚡</span><span class="logo-text">EmoFusion</span>
+      </div>
+      <h2 style="text-align:center;margin-bottom:.5rem">Access Required</h2>
+      <p style="text-align:center;color:var(--text-muted);margin-bottom:2rem">Please sign in to view your emotion history.</p>
+      <a href="/" class="btn btn-primary btn-full">Go to Login</a>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/" class="logo sidebar-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">EmoFusion</span>
+      </a>
+      <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+    <div class="user-card" id="sidebarUserCard">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div>
+        <div class="user-name" id="userName">Loading…</div>
+        <div class="user-email" id="userEmail">—</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard.html" class="nav-item" id="navDashboard">
+        <span class="nav-icon">🏠</span>Dashboard
+      </a>
+      <a href="/history.html" class="nav-item active" id="navHistory">
+        <span class="nav-icon">📊</span>History
+      </a>
+      <div class="nav-divider"></div>
+      <a href="/dashboard.html?tab=speech" class="nav-item">
+        <span class="nav-icon">🎙️</span>Speech
+      </a>
+      <a href="/dashboard.html?tab=camera" class="nav-item">
+        <span class="nav-icon">📷</span>Camera
+      </a>
+      <a href="/dashboard.html?tab=text" class="nav-item">
+        <span class="nav-icon">💬</span>Text
+      </a>
+      <div class="nav-divider"></div>
+      <button class="nav-item nav-signout" id="signOutBtn">
+        <span class="nav-icon">🚪</span>Sign Out
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="api-status" id="apiStatus">
+        <span class="status-dot status-green"></span> API Connected
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <div class="main-wrapper" id="mainWrapper">
+    <header class="topbar">
+      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      <div class="topbar-title">History & Analytics</div>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm" id="refreshHistoryBtn">↻ Refresh</button>
+      </div>
+    </header>
+
+    <!-- ── Stats Bar ──────────────────────────────────────────── -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card">
+        <div class="stat-icon">🔬</div>
+        <div class="stat-info">
+          <span class="stat-value" id="statTotal">—</span>
+          <span class="stat-label">Total Analyses</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <span class="stat-value" id="statDominant">—</span>
+          <span class="stat-label">Dominant Emotion</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <span class="stat-value" id="statAvgConf">—</span>
+          <span class="stat-label">Avg Confidence</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <span class="stat-value" id="statActiveDays">—</span>
+          <span class="stat-label">Active Days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Charts Row ─────────────────────────────────────────── -->
+    <div class="charts-row">
+      <div class="chart-card chart-wide">
+        <div class="chart-header">
+          <h3>Emotion Trend — Last 7 Days</h3>
+          <span class="chart-badge">Line Chart</span>
+        </div>
+        <div class="chart-body">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Emotion Distribution</h3>
+          <span class="chart-badge">Donut</span>
+        </div>
+        <div class="chart-body chart-donut-body">
+          <canvas id="donutChart"></canvas>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Records Table ──────────────────────────────────────── -->
+    <div class="table-card">
+      <div class="table-header-row">
+        <h3>All Records</h3>
+        <div class="table-filters">
+          <select id="filterSource" class="filter-select">
+            <option value="">All Sources</option>
+            <option value="text">Text</option>
+            <option value="audio">Audio</option>
+            <option value="camera">Camera</option>
+          </select>
+          <select id="filterEmotion" class="filter-select">
+            <option value="">All Emotions</option>
+            <option value="Happy">Happy</option>
+            <option value="Sad">Sad</option>
+            <option value="Angry">Angry</option>
+            <option value="Fear">Fear</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Disgust">Disgust</option>
+            <option value="Surprise">Surprise</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="records-table" id="recordsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Emotion</th>
+              <th>Confidence</th>
+              <th>Source</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTbody">
+            <tr><td colspan="5" class="table-empty">Loading records…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-pagination" id="tablePagination"></div>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/history.js"></script>
+</body>
+</html>

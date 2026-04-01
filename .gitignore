@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+venv/
+env/
+.venv/
+.env/
+
+# Environment files (SENSITIVE - never commit)
+emofusion/backend/.env
+*.env
+
+# Node / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.pnpm/
+dist/
+.next/
+.nuxt/
+.cache/
+
+# ML Models (large binary files)
+*.pt
+*.pth
+*.h5
+*.pkl
+*.joblib
+*.onnx
+models/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite3
