@@ -3,7 +3,7 @@ import api from "../utils/api";
 import EmotionResult from "./EmotionResult";
 import Spinner from "./Spinner";
 
-export default function AudioDetection({ onResult }) {
+export default function AudioDetection({ onResult, onOpenModal, onStartBreathing }) {
   const [mode, setMode] = useState("upload"); // "upload" | "record"
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
@@ -184,7 +184,7 @@ export default function AudioDetection({ onResult }) {
       </button>
 
       {loading && <Spinner label="Extracting Mel Spectrogram…" />}
-      {result && <EmotionResult result={result} />}
+      {result && <EmotionResult result={result} onOpenModal={onOpenModal} onStartBreathing={onStartBreathing} />}
     </div>
   );
 }

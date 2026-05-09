@@ -3,6 +3,9 @@ import Layout from "../components/Layout";
 import TextDetection from "../components/TextDetection";
 import AudioDetection from "../components/AudioDetection";
 import CameraDetection from "../components/CameraDetection";
+import SuggestionModal from "../components/SuggestionModal";
+import CrisisBanner from "../components/CrisisBanner";
+import BreathingExercise from "../components/BreathingExercise";
 import { useAuth } from "../context/AuthContext";
 import { getEmotion, timeAgo } from "../utils/emotions";
 
@@ -15,10 +18,29 @@ const TABS = [
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("text");
   const [recentResults, setRecentResults] = useState([]);
+  const [lastResult, setLastResult] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showBreathing, setShowBreathing] = useState(false);
   const { user } = useAuth();
 
+  const NEGATIVE_EMOTIONS = ["sad", "fear", "angry", "disgust"];
+
   const handleResult = (data) => {
-    setRecentResults((prev) => [{ ...data, ts: new Date().toISOString() }, ...prev].slice(0, 5));
+    setLastResult(data);
+    setRecentResults((prev) =>
+      [{ ...data, ts: new Date().toISOString() }, ...prev].slice(0, 5)
+    );
+    // Auto-open modal for negative emotions
+    if (NEGATIVE_EMOTIONS.includes(data.emotion?.toLowerCase())) {
+      setTimeout(() => setShowModal(true), 600);
+    }
+  };
+
+  // Pass onResult + modal handlers down to detection components
+  const detectionProps = {
+    onResult: handleResult,
+    onOpenModal: () => setShowModal(true),
+    onStartBreathing: () => setShowBreathing(true),
   };
 
   return (
@@ -28,7 +50,9 @@ export default function DashboardPage() {
         <h1 className="font-display font-bold text-2xl md:text-3xl text-white mb-1">
           Welcome back, {user?.name?.split(" ")[0]} 👋
         </h1>
-        <p className="text-gray-400 text-sm">Choose a detection mode and analyze your emotions in real-time.</p>
+        <p className="text-gray-400 text-sm">
+          Choose a detection mode and analyze your emotions in real-time.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -62,19 +86,21 @@ export default function DashboardPage() {
                 <h2 className="font-display font-bold text-white">
                   {TABS.find((t) => t.key === activeTab)?.label} Emotion Detection
                 </h2>
-                <p className="text-xs text-gray-400">{TABS.find((t) => t.key === activeTab)?.desc}</p>
+                <p className="text-xs text-gray-400">
+                  {TABS.find((t) => t.key === activeTab)?.desc}
+                </p>
               </div>
             </div>
 
-            {activeTab === "text"   && <TextDetection   onResult={handleResult} />}
-            {activeTab === "audio"  && <AudioDetection  onResult={handleResult} />}
-            {activeTab === "camera" && <CameraDetection onResult={handleResult} />}
+            {activeTab === "text"   && <TextDetection   {...detectionProps} />}
+            {activeTab === "audio"  && <AudioDetection  {...detectionProps} />}
+            {activeTab === "camera" && <CameraDetection {...detectionProps} />}
           </div>
         </div>
 
-        {/* Right sidebar — recent results */}
+        {/* Right sidebar */}
         <div className="space-y-6">
-          {/* Quick stats */}
+          {/* Session Summary */}
           <div className="glass rounded-2xl p-5">
             <h3 className="font-display font-bold text-white mb-4">Session Summary</h3>
             <div className="space-y-3">
@@ -110,6 +136,35 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Mental Health Quick Access */}
+          <div className="glass rounded-2xl p-5">
+            <h3 className="font-display font-bold text-white mb-3">🧘 Wellness Tools</h3>
+            <div className="space-y-2">
+              <button
+                onClick={() => setShowBreathing(true)}
+                className="w-full flex items-center gap-3 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-all text-left"
+              >
+                <span className="text-xl">🫁</span>
+                <div>
+                  <div className="text-sm font-semibold text-purple-300">Guided Breathing</div>
+                  <div className="text-xs text-gray-400">4-4-6 calming technique</div>
+                </div>
+              </button>
+              {lastResult && NEGATIVE_EMOTIONS.includes(lastResult.emotion?.toLowerCase()) && (
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 transition-all text-left"
+                >
+                  <span className="text-xl">💙</span>
+                  <div>
+                    <div className="text-sm font-semibold text-blue-300">View Suggestions</div>
+                    <div className="text-xs text-gray-400">Tips & helpline numbers</div>
+                  </div>
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Tips card */}
           <div className="glass rounded-2xl p-5">
             <h3 className="font-display font-bold text-white mb-3">💡 Tips</h3>
@@ -129,6 +184,22 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Overlays ── */}
+      {showModal && lastResult?.suggestion && (
+        <SuggestionModal
+          emotion={lastResult.emotion}
+          suggestion={lastResult.suggestion}
+          onClose={() => setShowModal(false)}
+          onStartBreathing={() => { setShowModal(false); setShowBreathing(true); }}
+        />
+      )}
+
+      {showBreathing && (
+        <BreathingExercise onClose={() => setShowBreathing(false)} />
+      )}
+
+      <CrisisBanner emotion={lastResult?.emotion} />
     </Layout>
   );
 }

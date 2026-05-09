@@ -3,7 +3,7 @@ import api from "../utils/api";
 import EmotionResult from "./EmotionResult";
 import Spinner from "./Spinner";
 
-export default function CameraDetection({ onResult }) {
+export default function CameraDetection({ onResult, onOpenModal, onStartBreathing }) {
   const [cameraOn, setCameraOn] = useState(false);
   const [captured, setCaptured] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -195,7 +195,7 @@ export default function CameraDetection({ onResult }) {
       </div>
 
       {loading && <Spinner label="Detecting facial expressions…" />}
-      {result && <EmotionResult result={result} />}
+      {result && <EmotionResult result={result} onOpenModal={onOpenModal} onStartBreathing={onStartBreathing} />}
     </div>
   );
 }

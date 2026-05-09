@@ -10,7 +10,7 @@ const SAMPLES = [
   { label: "😨 Fear",  text: "I'm terrified of what might happen next. The anxiety is overwhelming." },
 ];
 
-export default function TextDetection({ onResult }) {
+export default function TextDetection({ onResult, onOpenModal, onStartBreathing }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -76,7 +76,7 @@ export default function TextDetection({ onResult }) {
       </button>
 
       {loading && <Spinner label="Running NLP model…" />}
-      {result && <EmotionResult result={result} />}
+      {result && <EmotionResult result={result} onOpenModal={onOpenModal} onStartBreathing={onStartBreathing} />}
     </div>
   );
 }

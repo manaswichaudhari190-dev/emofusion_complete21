@@ -18,6 +18,7 @@ from models.emotion_model import EmotionModel
 from services.text_emotion import TextEmotionService
 from services.audio_emotion import AudioEmotionService
 from services.face_emotion import FaceEmotionService
+from services.suggestion_service import get_suggestion
 
 load_dotenv()
 
@@ -148,7 +149,7 @@ def predict_text(current_user):
         confidence=result["confidence"],
         input_type="text",
     )
-
+    result["suggestion"] = get_suggestion(result["emotion"])
     return jsonify(result)
 
 
@@ -175,7 +176,7 @@ def predict_audio(current_user):
         confidence=result["confidence"],
         input_type="audio",
     )
-
+    result["suggestion"] = get_suggestion(result["emotion"])
     return jsonify(result)
 
 
@@ -195,7 +196,7 @@ def predict_face(current_user):
         confidence=result["confidence"],
         input_type="camera",
     )
-
+    result["suggestion"] = get_suggestion(result["emotion"])
     return jsonify(result)
 
 
