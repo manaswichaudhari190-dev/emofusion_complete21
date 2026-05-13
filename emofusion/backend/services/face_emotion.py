@@ -57,11 +57,26 @@ class FaceEmotionService:
         self.backend = "simulate"
 
     def _simulate_prediction(self) -> Dict[str, Any]:
-        proba = np.random.dirichlet(np.ones(len(EMOTIONS)) * 0.4)
+        # Use a low alpha to concentrate probability on one emotion
+        # alpha=0.12 → dominant emotion typically gets 65-95%
+        proba = np.random.dirichlet(np.ones(len(EMOTIONS)) * 0.12)
         idx = proba.argmax()
         emotion = EMOTIONS[idx]
         confidence = round(float(proba[idx]) * 100, 1)
-        confidence = max(55.0, min(confidence, 97.0))
+        # Ensure confidence is meaningfully above 55% — boost if still low
+        if confidence < 62.0:
+            boost = random.uniform(62.0, 80.0)
+            # Redistribute the boost proportionally from other emotions
+            deficit = boost - confidence
+            proba_list = list(proba)
+            for i, p in enumerate(proba_list):
+                if i != idx:
+                    reduction = min(p, deficit / (len(EMOTIONS) - 1))
+                    proba_list[i] = max(0.0, p - reduction)
+            proba_list[idx] = boost / 100.0
+            proba = np.array(proba_list)
+            confidence = boost
+        confidence = min(round(confidence, 1), 97.0)
         breakdown = {e: round(float(p) * 100, 1) for e, p in zip(EMOTIONS, proba)}
         return {
             "emotion": emotion,
