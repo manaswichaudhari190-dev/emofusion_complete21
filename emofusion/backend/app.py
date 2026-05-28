@@ -23,10 +23,23 @@ from services.suggestion_service import get_suggestion
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"], supports_credentials=True)
+
+# BUG 10 FIX: CORS origins loaded from env var so the app works when deployed
+# to Vercel, Netlify, Railway, or any real domain — not just localhost.
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001").split(",")
+CORS(app, origins=origins, supports_credentials=True)
 bcrypt = Bcrypt(app)
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "emofusion-secret-key-2024")
+# BUG 8 FIX: raise a RuntimeError at startup if SECRET_KEY is not set.
+# Previously fell back to the literal string "emofusion-secret-key-2024" which
+# is publicly visible in this repo — anyone could forge valid JWT tokens.
+_secret = os.getenv("SECRET_KEY")
+if not _secret:
+    raise RuntimeError(
+        "SECRET_KEY environment variable is not set. "
+        "Generate one with: python -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+app.config["SECRET_KEY"] = _secret
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max upload
 
 # Initialize services
@@ -34,7 +47,9 @@ user_model = UserModel()
 emotion_model = EmotionModel()
 text_service = TextEmotionService()
 audio_service = AudioEmotionService()
-face_service = FaceEmotionService()
+face_service = FaceEmotionService(
+    model_path=os.getenv("FACE_MODEL_PATH", "best_rafdb_v2_live_model.pth")
+)
 
 
 # ─── JWT Auth Decorator ────────────────────────────────────────────────────────
@@ -188,6 +203,14 @@ def predict_face(current_user):
         return jsonify({"error": "No image provided"}), 400
 
     image_file = request.files["image"]
+
+    # BUG 6 FIX: validate image format before passing to the service.
+    # Previously any file was forwarded, causing opaque errors on non-images.
+    ALLOWED_IMG = {"jpg", "jpeg", "png", "webp"}
+    parts = image_file.filename.rsplit(".", 1)
+    if len(parts) < 2 or parts[-1].lower() not in ALLOWED_IMG:
+        return jsonify({"error": "Unsupported image format. Use jpg/png/webp"}), 400
+
     result = face_service.predict(image_file)
 
     emotion_model.log(
@@ -254,4 +277,9 @@ def health():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # BUG 9 FIX: debug mode now reads from FLASK_DEBUG env var.
+    # Hardcoded debug=True is a remote code execution vulnerability in production.
+    app.run(
+        debug=os.getenv("FLASK_DEBUG", "false").lower() == "true",
+        port=int(os.getenv("PORT", 5000))
+    )

@@ -5,20 +5,36 @@ PyJWT==2.8.0
 pymongo==4.7.3
 python-dotenv==1.0.1
 
-# ML / Audio
-numpy==1.26.4
+# ── Face Emotion — EfficientViT-M5 (primary model) ─────────────────────────────
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+timm>=0.9.0
+
+# ── Face Detection — YOLOv8 ────────────────────────────────────────────────────
+ultralytics>=8.0.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# ── Audio & ML ─────────────────────────────────────────────────────────────────
+numpy>=1.24.0
 scikit-learn==1.5.0
 librosa==0.10.2
 soundfile==0.12.1
 
-# Deep learning (optional — heavy, for real model)
+# ── NLP (optional — for BERT text upgrade) ─────────────────────────────────────
+transformers>=4.35.0
+
+# ── Monitoring & Analytics ─────────────────────────────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ── ONNX export (optional — production optimization) ───────────────────────────
+# onnx>=1.14.0
+# onnxruntime-gpu>=1.16.0
+
+# ── Deep learning audio CNN (optional) ─────────────────────────────────────────
 # tensorflow==2.16.1
 
-# Face detection (choose one)
-# deepface==0.0.92
-# fer==22.5.1
-# opencv-python==4.9.0.80
-
-# Text NLP (optional — for BERT upgrade)
-# transformers==4.41.0
-# torch==2.3.0
+# ── DeepFace (optional fallback — NOT the primary face backend) ─────────────────
+# deepface>=0.0.79

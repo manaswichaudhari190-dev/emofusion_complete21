@@ -28,12 +28,17 @@ EMOTION_EMOJIS = {
     "surprise": "😲",
 }
 
+# Single source of truth for all 7 emotions (BUG 2 FIX: neutral was missing)
+EMOTIONS_ALL = ["happy", "sad", "angry", "fear", "neutral", "disgust", "surprise"]
+
 # Keyword-based heuristics for demo; the real model uses sklearn below
 EMOTION_KEYWORDS = {
     "happy": ["happy", "joy", "excited", "love", "great", "wonderful", "amazing", "fantastic", "smile", "laugh", "good", "best", "delighted", "thrilled", "cheerful"],
     "sad": ["sad", "cry", "unhappy", "depressed", "miserable", "heartbroken", "lonely", "grief", "sorrow", "down", "hopeless", "pain"],
     "angry": ["angry", "furious", "mad", "hate", "rage", "annoyed", "irritated", "frustrated", "outraged", "livid"],
     "fear": ["scared", "afraid", "fear", "terrified", "anxious", "nervous", "worried", "panic", "dread", "terror"],
+    # BUG 2 FIX: "neutral" is now explicitly defined so breakdown always has 7 keys
+    "neutral": ["okay", "fine", "alright", "normal", "meh", "so-so", "calm", "indifferent"],
     "disgust": ["disgusting", "gross", "nasty", "revolting", "sickening", "repulsive", "awful"],
     "surprise": ["surprised", "shocked", "astonished", "unexpected", "wow", "unbelievable", "incredible"],
 }
@@ -76,7 +81,8 @@ class TextEmotionService:
     def _keyword_predict(self, text: str) -> Dict[str, Any]:
         """Simple keyword-based fallback predictor"""
         text_lower = text.lower()
-        scores = {emotion: 0 for emotion in EMOTION_KEYWORDS}
+        # BUG 2 FIX: iterate all 7 emotions including neutral
+        scores = {emotion: 0 for emotion in EMOTIONS_ALL}
 
         for emotion, keywords in EMOTION_KEYWORDS.items():
             for kw in keywords:
@@ -85,19 +91,18 @@ class TextEmotionService:
 
         if all(v == 0 for v in scores.values()):
             emotion = "neutral"
-            confidence = 62 + random.randint(0, 20)
+            confidence = float(62 + random.randint(0, 20))
         else:
             emotion = max(scores, key=scores.get)
             total = sum(scores.values())
             confidence = round((scores[emotion] / total) * 100, 1)
             confidence = max(55.0, min(confidence, 96.0))
 
-        # Build breakdown
-        all_emotions = list(EMOTION_KEYWORDS.keys())
-        remaining = 100 - confidence
-        breakdown = {e: 0.0 for e in all_emotions}
+        # Build breakdown using EMOTIONS_ALL (always 7 keys, neutral included)
+        remaining = 100.0 - confidence
+        breakdown = {e: 0.0 for e in EMOTIONS_ALL}
         breakdown[emotion] = confidence
-        others = [e for e in all_emotions if e != emotion]
+        others = [e for e in EMOTIONS_ALL if e != emotion]
         for i, e in enumerate(others):
             if i == len(others) - 1:
                 breakdown[e] = round(remaining, 1)
@@ -105,6 +110,11 @@ class TextEmotionService:
                 val = round(remaining / len(others), 1)
                 breakdown[e] = val
                 remaining -= val
+
+        # BUG 7 FIX: normalize so breakdown sums exactly to 100 (eliminates rounding drift)
+        total = sum(breakdown.values())
+        if total > 0:
+            breakdown = {e: round(v / total * 100, 1) for e, v in breakdown.items()}
 
         return {
             "emotion": emotion,

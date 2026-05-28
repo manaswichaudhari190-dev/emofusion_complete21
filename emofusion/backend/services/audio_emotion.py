@@ -28,6 +28,11 @@ EMOTION_EMOJIS = {
 
 EMOTIONS = ["happy", "sad", "angry", "fear", "neutral", "disgust", "surprise"]
 
+# BUG 5 FIX: single sample-rate constant used by BOTH CNN path and heuristic path.
+# Previously CNN used sr=44100 and heuristic used sr=22050, making feature
+# thresholds unreliable across code paths.
+SAMPLE_RATE = 22050
+
 
 class AudioEmotionService:
     def __init__(self):
@@ -54,11 +59,15 @@ class AudioEmotionService:
         """
         Extract Mel Spectrogram features from audio file.
         Shape: (128, 251, 1) — matches CNN input layer.
+
+        BUG 5 FIX: uses the shared SAMPLE_RATE constant (22050) instead of
+        the previous hard-coded sr=44100, keeping CNN and heuristic paths
+        on the same feature scale.
         """
         import librosa
-        y, sr = librosa.load(audio_path, sr=44100, duration=2.5)
+        y, sr = librosa.load(audio_path, sr=SAMPLE_RATE, duration=2.5)  # BUG 5 FIX
         # Zero-pad if shorter than 2.5s
-        target_len = int(44100 * 2.5)
+        target_len = int(SAMPLE_RATE * 2.5)
         if len(y) < target_len:
             y = np.pad(y, (0, target_len - len(y)))
         else:
@@ -81,7 +90,7 @@ class AudioEmotionService:
         if audio_path:
             try:
                 import librosa
-                y, sr = librosa.load(audio_path, sr=22050, duration=5.0, mono=True)
+                y, sr = librosa.load(audio_path, sr=SAMPLE_RATE, duration=5.0, mono=True)  # BUG 5 FIX
                 energy   = float(np.mean(librosa.feature.rms(y=y)))
                 zcr      = float(np.mean(librosa.feature.zero_crossing_rate(y)))
                 spec_cen = float(np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)))
@@ -142,7 +151,11 @@ class AudioEmotionService:
 
     def predict(self, audio_file) -> Dict[str, Any]:
         """Predict emotion from audio file object"""
-        suffix = "." + audio_file.filename.rsplit(".", 1)[-1].lower()
+        # BUG 4 FIX: guard against filenames with no extension (e.g. raw blob uploads).
+        # Previously rsplit always took [-1], giving a nonsensical suffix like
+        # '.audioblob' which causes librosa to silently fail or throw a cryptic error.
+        parts = audio_file.filename.rsplit(".", 1)
+        suffix = ("." + parts[-1].lower()) if len(parts) > 1 else ".wav"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             audio_file.save(tmp.name)
             tmp_path = tmp.name

@@ -39,6 +39,11 @@ dist/
 *.onnx
 models/
 
+# EfficientViT-M5 model files (explicit — never commit these large binaries)
+best_rafdb_v2_live_model.pth
+yolov8n-face.pt
+yolov8n.pt
+
 # OS
 .DS_Store
 Thumbs.db
